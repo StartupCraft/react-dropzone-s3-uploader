@@ -115,6 +115,7 @@ export default class DropzoneS3Uploader extends React.Component {
 
     const uploadedFiles = this.state.uploadedFiles
     uploadedFiles.push(uploadedFile)
+    this.uploader = null
     this.setState({uploadedFiles, error: null, progress: null}, () => {
       this.props.onFinish && this.props.onFinish(uploadedFile)
     })
@@ -126,7 +127,7 @@ export default class DropzoneS3Uploader extends React.Component {
       files,
       ...this.state.uploaderOptions,
     }
-    new S3Upload(options) // eslint-disable-line
+    this.uploader = new S3Upload(options) // eslint-disable-line
     this.props.onDrop && this.props.onDrop(files, rejectedFiles)
   }
 
