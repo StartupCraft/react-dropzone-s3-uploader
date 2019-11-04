@@ -1,11 +1,9 @@
-import React, { createRef } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import S3Upload from 'react-s3-uploader/s3upload'
 import Dropzone from 'react-dropzone'
 
-export default class DropzoneS3Uploader extends React.Component {
-  dropzone = createRef
-
+export default class DropzoneS3Uploader extends Component {
   constructor(props) {
     super()
 
@@ -94,6 +92,10 @@ export default class DropzoneS3Uploader extends React.Component {
   fileUrl = (s3Url, filename) =>
     `${s3Url.endsWith('/') ? s3Url.slice(0, -1) : s3Url}/${filename}`
 
+  addDropzoneRef = ref => {
+    this.dropzone = ref
+  }
+
   renderImage = ({ uploadedFile }) => (
     <div className="rdsu-image">
       <img alt="rdsu-img" src={uploadedFile.fileUrl} />
@@ -134,6 +136,7 @@ export default class DropzoneS3Uploader extends React.Component {
 
     const { uploadedFiles } = this.state
     const childProps = { s3Url, ...this.state }
+
     this.props.notDropzoneProps.forEach(prop => delete dropzoneProps[prop])
 
     let content = null
@@ -165,8 +168,13 @@ export default class DropzoneS3Uploader extends React.Component {
     }
 
     return (
-      <Dropzone ref={this.dropzone} onDrop={this.handleDrop} {...dropzoneProps}>
-        {content}
+      <Dropzone ref={this.addDropzoneRef} onDrop={this.handleDrop}>
+        {({ getRootProps, getInputProps }) => (
+          <div {...getRootProps(dropzoneProps)}>
+            <input {...getInputProps()} />
+            {content}
+          </div>
+        )}
       </Dropzone>
     )
   }
