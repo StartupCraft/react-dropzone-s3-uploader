@@ -21,7 +21,10 @@ export default class DropzoneS3Uploader extends React.Component {
       })
     }
 
-    this.state = { uploadedFiles }
+    this.state = {
+      uploadedFiles,
+      ...DropzoneS3Uploader.getDerivedStateFromProps(props),
+    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -31,9 +34,6 @@ export default class DropzoneS3Uploader extends React.Component {
         s3path: '',
         contentDisposition: 'auto',
         uploadRequestHeaders: { 'x-amz-acl': 'public-read' },
-        onFinishS3Put: this.handleFinish,
-        onProgress: this.handleProgress,
-        onError: this.handleError,
         ...props.upload,
       },
     }
@@ -80,6 +80,9 @@ export default class DropzoneS3Uploader extends React.Component {
 
     const options = {
       files,
+      onFinishS3Put: this.handleFinish,
+      onProgress: this.handleProgress,
+      onError: this.handleError,
       ...this.state.uploaderOptions,
     }
 
